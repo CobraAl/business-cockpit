@@ -19,7 +19,7 @@ Your business cockpit for freelancers and small studios: projects, a daily task 
 
 - A computer and about 15 minutes.
 - An email address you can open right now (the login link is sent there).
-- Three free accounts, created in Step 1: **GitHub** (stores your copy of the code), **Supabase** (your database and login), **Vercel** (puts the site online). The free plans are enough; you will not be asked for a credit card for this.
+- Three free accounts, created in Step 1: **GitHub** (stores your copy of the code), **Supabase** (your database and login), **Vercel** (puts the site online). The free plans are enough; you will not be asked for a credit card for this. (Vercel's free Hobby plan is meant for personal, non-commercial use: check [their terms](https://vercel.com/docs/limits/fair-use-guidelines) for your case.)
 
 Tip: open this page in one browser tab and do each step in another tab.
 
@@ -38,13 +38,14 @@ Tip: open this page in one browser tab and do each step in another tab.
 
 ### 2.1 Create a project
 
-1. In Supabase, click **New project**.
-2. Fill in:
+1. If Supabase first asks you to create an **organization**: give it any name (your name is fine), keep the **Free** plan, and confirm.
+2. Click **New project**.
+3. Fill in:
    - **Project name**: `cockpit` (or anything you like).
    - **Database password**: click **Generate a password**, then copy it somewhere safe (a password manager). You will not need it for the steps below.
    - **Region**: the one closest to you.
    - Leave every other option as it is (the Data API must stay enabled).
-3. Click **Create new project** and wait 1 to 2 minutes until the dashboard is ready.
+4. Click **Create new project** and wait 1 to 2 minutes until the dashboard is ready.
 
 ### 2.2 Create the tables (one copy and paste)
 
@@ -65,6 +66,8 @@ You need two values. Keep them in a note for Step 3.
 2. Copy:
    - the **Project URL**, which looks like `https://abcdefghijkl.supabase.co`;
    - the **Publishable key**, which starts with `sb_publishable_`.
+
+   Copy only the values themselves. If Supabase shows them as lines like `VITE_SUPABASE_URL=https://...`, copy just the part after the `=` sign: the URL starts with `https://` and ends with `.supabase.co`.
 
 If you don't see them there: the URL is under **Project Settings → Data API**, and the key under **Project Settings → API Keys**. (If you only find an older **anon** key, starting with `eyJ`, it works too.)
 
@@ -94,7 +97,7 @@ Never use the **secret** or **service_role** key here: it bypasses every securit
 Without this, the login link would send you to the wrong place.
 
 1. In Supabase, go to **Authentication → URL Configuration**.
-2. **Site URL**: paste your Vercel address (for example `https://cockpit-abc123.vercel.app`), then click **Save**.
+2. **Site URL**: paste your Vercel address (for example `https://cockpit-abc123.vercel.app`), then click **Save**. It must start with `https://` (type it in front if Vercel showed the address without it) and must not end with a `/`.
 3. **Redirect URLs**: click **Add URL**, paste the same address, then save.
 
 ---
@@ -133,7 +136,12 @@ Done. 🎉
 ## Troubleshooting
 
 **The login email doesn't arrive.**
-Check your spam folder. Until you plug in an email provider, Supabase only sends login emails to the email address of your Supabase account, and at most 2 emails per hour. So use that exact address, and if you asked for several links, wait an hour and try again. To log in with another address, set up an email provider in **Authentication → Emails → SMTP Settings** (for example [Resend](https://resend.com), which has a free plan).
+Check your spam folder. Until you plug in an email provider, Supabase only sends login emails to the email address of your Supabase account, and at most 2 emails per hour. So use that exact address, and if you asked for several links, wait an hour and try again.
+
+Your data belongs to the address you first logged in with. Another address would be a separate, empty account (and after Step 6 it is refused with "This address doesn't have access to Cockpit").
+
+**The site shows "Setup problem", or a blank white page.**
+One of the two Vercel variables has a wrong value: usually the whole `NAME=value` line was pasted instead of just the value, or the two values were swapped. In Vercel, open your project → **Settings → Environment Variables**, fix the values (Step 2.3 and Step 3), then go to **Deployments**, click **⋯** on the latest one and choose **Redeploy**.
 
 **The link in the email opens `localhost` or a page that doesn't load.**
 Step 4 is missing or has a typo. Fix it, then ask for a new link (the old one is used up).
@@ -144,11 +152,14 @@ Links work once and for a limited time. Ask for a new one and click it within a 
 **There is no Sign in page, and what I enter disappears when I open the site on another device.**
 The two Vercel variables are missing or misspelled, so the app is saving in your browser only. In Vercel, open your project → **Settings → Environment Variables**, fix the names and values (Step 3), then go to **Deployments**, click **⋯** on the latest one and choose **Redeploy**. The variables are only read when the site is built, so the redeploy is needed.
 
-**"Couldn't load your data" after logging in, or "The database rejected your last change".**
-The tables are missing: Step 2.2 was not run, or was run on another Supabase project than the one whose keys you used. Run it on the right project and reload the page.
+**"Couldn't load your data" right after your first login.**
+The tables are missing: Step 2.2 was not run, or was run on another Supabase project than the one whose keys you used. Run it on the right project, then click **Try again**.
 
-**My Supabase project is paused.**
-Free Supabase projects are paused after a week without any activity. Open the project in Supabase and click **Restore project**; your data is kept.
+**"The database rejected your last change".**
+That one change was refused (for example, the item was deleted or changed on another device at the same time). Click **Reload**: everything already saved is still there.
+
+**After some days without using it: "Offline" or "Couldn't load your data", and no login email.**
+Free Supabase projects are paused after about a week without activity (Supabase emails you before). Open your project on [supabase.com](https://supabase.com) and click the button to restore or resume it, wait a couple of minutes, then reload your Cockpit. Using Cockpit regularly keeps the project awake.
 
 ---
 
@@ -156,7 +167,7 @@ Free Supabase projects are paused after a week without any activity. Open the pr
 
 Your copy of the code is in your GitHub account, and every change you push to it goes online automatically (Vercel rebuilds the site in about a minute).
 
-The easiest way to change things without knowing how to code: open your copy with an AI coding assistant (for example Claude Code or Cursor) and describe what you want, like "make the main colour green" or "add a Training category to the costs".
+The easiest way to change things without knowing how to code: open your copy with an AI coding assistant (for example Claude Code or Cursor) and describe what you want, like "make the main colour green" or "add an Insurance category to the costs".
 
 Where things live, if you want to look yourself:
 
@@ -186,7 +197,7 @@ npm run build
 
 - Without a `.env.local` file the app runs on `localStorage` only, with no login: handy to try things.
 - With your database: copy `.env.example` to `.env.local` and fill in the two values (never commit it). Add `http://localhost:5173` to the Redirect URLs in Supabase (Step 4).
-- Database changes: add a migration in `supabase/migrations/`, then `supabase link --project-ref <ref>` and `supabase db push` with the [Supabase CLI](https://supabase.com/docs/guides/cli). `supabase/setup.sql` is all the migrations in one file, for the SQL Editor route.
+- Database changes: add a migration in `supabase/migrations/`, then apply it either by pasting it into the SQL Editor and clicking **Run**, or with the [Supabase CLI](https://supabase.com/docs/guides/cli) (`supabase link --project-ref <ref>`, then `supabase db push`). `supabase/setup.sql` is all the existing migrations in one file. If you installed with it and then switch to the CLI, first mark those migrations as applied, or `db push` will try to run them again: `supabase migration repair --status applied <version>` for each file name's leading number in `supabase/migrations/`.
 
 How it is built: Vite, React 19 and TypeScript, plain CSS, Supabase (Postgres, magic-link auth, row-level security).
 

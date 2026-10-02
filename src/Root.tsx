@@ -4,15 +4,32 @@ import App, { Loading } from './App';
 import { ConfirmProvider } from './components/Confirm';
 import { createSupabaseRepository } from './lib/remote';
 import { localRepository } from './lib/store';
-import { supabase } from './lib/supabase';
+import { configError, supabase } from './lib/supabase';
 import LoginPage from './pages/LoginPage';
 
 /** Picks where the data lives: Supabase behind a login when configured, else this browser. */
 export default function Root() {
   return (
     <Boundary>
-      <ConfirmProvider>{supabase ? <AuthGate /> : <App repo={localRepository} />}</ConfirmProvider>
+      {configError ? (
+        <SetupError message={configError} />
+      ) : (
+        <ConfirmProvider>{supabase ? <AuthGate /> : <App repo={localRepository} />}</ConfirmProvider>
+      )}
     </Boundary>
+  );
+}
+
+/** The site was deployed with unusable Supabase settings: say which and how to fix it. */
+function SetupError({ message }: { message: string }) {
+  return (
+    <div className="login">
+      <div className="login-card section" style={{ gap: '0.75rem' }}>
+        <h1 style={{ fontSize: '1.25rem' }}>Setup problem</h1>
+        <p className="sub" style={{ margin: 0, lineHeight: 1.6 }}>{message}</p>
+        <p className="sub" style={{ margin: 0, lineHeight: 1.6 }}>Fix it in Vercel (your project, Settings, Environment Variables), then redeploy.</p>
+      </div>
+    </div>
   );
 }
 
