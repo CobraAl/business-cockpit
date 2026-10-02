@@ -7,13 +7,13 @@ import type { EntryType, NoteKind, ProjectStatus, TaskColumn } from '../types';
  */
 export const LOCALE = 'en-GB';
 
-export const PROJECT_STATUSES: ProjectStatus[] = ['Pas démarré', 'En cours', 'En pause', 'Terminé'];
+export const PROJECT_STATUSES: ProjectStatus[] = ['Not started', 'In progress', 'On hold', 'Done'];
 
 export const STATUS_META: Record<ProjectStatus, { label: string; bg: string; color: string }> = {
-  'En cours': { label: 'In progress', bg: '#fff3de', color: '#b36b00' },
-  'Pas démarré': { label: 'Not started', bg: '#fde8e8', color: '#c43d3d' },
-  'En pause': { label: 'On hold', bg: '#eceef2', color: '#5b6270' },
-  'Terminé': { label: 'Done', bg: '#e3f6e8', color: '#1f8a47' },
+  'In progress': { label: 'In progress', bg: '#fff3de', color: '#b36b00' },
+  'Not started': { label: 'Not started', bg: '#fde8e8', color: '#c43d3d' },
+  'On hold': { label: 'On hold', bg: '#eceef2', color: '#5b6270' },
+  'Done': { label: 'Done', bg: '#e3f6e8', color: '#1f8a47' },
 };
 export const statusLabel = (s: ProjectStatus) => STATUS_META[s]?.label ?? s;
 
@@ -25,36 +25,36 @@ export const COLUMNS: { key: TaskColumn; label: string; dot: string }[] = [
 ];
 
 export const CATEGORIES: Record<EntryType, string[]> = {
-  revenue: ['Prestations', 'Abonnements / retainers', 'Produits', 'Autre revenu'],
-  direct: ['Sous-traitance', 'Matériel projet', 'Licences client'],
+  revenue: ['Services', 'Subscriptions / retainers', 'Products', 'Other income'],
+  direct: ['Subcontracting', 'Project materials', 'Client licences'],
   opex: [
-    'Logiciels & SaaS',
+    'Software & SaaS',
     'Marketing',
-    'Loyer & bureau',
-    'Déplacements',
-    'Frais bancaires',
-    'Cotisations & impôts',
-    'Formation',
-    'Autre charge',
+    'Rent & office',
+    'Travel',
+    'Bank fees',
+    'Social charges & taxes',
+    'Training',
+    'Other expense',
   ],
 };
 
 const CATEGORY_LABELS: Record<string, string> = {
-  Prestations: 'Services',
-  'Abonnements / retainers': 'Subscriptions / retainers',
-  Produits: 'Products',
-  'Autre revenu': 'Other income',
-  'Sous-traitance': 'Subcontracting',
-  'Matériel projet': 'Project materials',
-  'Licences client': 'Client licences',
-  'Logiciels & SaaS': 'Software & SaaS',
+  Services: 'Services',
+  'Subscriptions / retainers': 'Subscriptions / retainers',
+  Products: 'Products',
+  'Other income': 'Other income',
+  'Subcontracting': 'Subcontracting',
+  'Project materials': 'Project materials',
+  'Client licences': 'Client licences',
+  'Software & SaaS': 'Software & SaaS',
   Marketing: 'Marketing',
-  'Loyer & bureau': 'Rent & office',
-  'Déplacements': 'Travel',
-  'Frais bancaires': 'Bank fees',
-  'Cotisations & impôts': 'Social charges & taxes',
-  Formation: 'Training',
-  'Autre charge': 'Other expense',
+  'Rent & office': 'Rent & office',
+  'Travel': 'Travel',
+  'Bank fees': 'Bank fees',
+  'Social charges & taxes': 'Social charges & taxes',
+  Training: 'Training',
+  'Other expense': 'Other expense',
 };
 /** English label for a stored category (unknown categories are shown as stored). */
 export const catLabel = (c: string) => CATEGORY_LABELS[c] ?? c;
@@ -76,9 +76,9 @@ export const CURRENCIES = [
 
 export const NOTE_KINDS: { key: NoteKind; label: string; bg: string; color: string }[] = [
   { key: 'note', label: 'Note', bg: '#f1f3f7', color: '#4a5061' },
-  { key: 'appel', label: 'Call', bg: '#eeedfe', color: '#3c3489' },
+  { key: 'call', label: 'Call', bg: '#eeedfe', color: '#3c3489' },
   { key: 'decision', label: 'Decision', bg: '#faece7', color: '#712b13' },
-  { key: 'retour', label: 'Client feedback', bg: '#e6f1fb', color: '#0c447c' },
+  { key: 'feedback', label: 'Client feedback', bg: '#e6f1fb', color: '#0c447c' },
   { key: 'email', label: 'Email', bg: '#e1f5ee', color: '#085041' },
 ];
 

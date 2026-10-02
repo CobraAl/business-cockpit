@@ -9,7 +9,7 @@ create table if not exists notes (
   user_id     uuid not null default auth.uid() references auth.users on delete cascade,
   project_id  uuid not null references projects on delete cascade,
   date        date not null,
-  kind        text not null default 'note' check (kind in ('note', 'appel', 'decision', 'retour', 'email')),
+  kind        text not null default 'note' check (kind in ('note', 'call', 'decision', 'feedback', 'email')),
   body        text not null default '',
   created_at  timestamptz not null default now()
 );

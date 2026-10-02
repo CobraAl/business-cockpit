@@ -1,4 +1,4 @@
-export type ProjectStatus = 'Pas démarré' | 'En cours' | 'En pause' | 'Terminé';
+export type ProjectStatus = 'Not started' | 'In progress' | 'On hold' | 'Done';
 export type TaskColumn = 'todo' | 'ongoing' | 'blocked' | 'done';
 /** revenue = money in; direct = cost tied to delivering a project; opex = running the business. */
 export type EntryType = 'revenue' | 'direct' | 'opex';
@@ -58,7 +58,7 @@ export interface ProjectBrief {
   out: string;
 }
 
-export type NoteKind = 'note' | 'appel' | 'decision' | 'retour' | 'email';
+export type NoteKind = 'note' | 'call' | 'decision' | 'feedback' | 'email';
 
 /** A dated entry in a project's journal (call, decision, client feedback…). */
 export interface Note {

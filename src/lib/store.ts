@@ -35,7 +35,7 @@ export const localRepository: Repository = {
     } catch {
       // Keep the unreadable copy aside, then start clean rather than failing on every load.
       try {
-        localStorage.setItem(`${KEY}-illisible-${Date.now()}`, raw);
+        localStorage.setItem(`${KEY}-unreadable-${Date.now()}`, raw);
         return null;
       } catch {
         throw new Error('Local data is unreadable');
@@ -133,7 +133,7 @@ export function normalize(d: Partial<AppData>): AppData {
         id: idOf(x.id), name: text(x.name) || 'Untitled',
         clientId: cid(x.clientId) || (legacy && old ? byName(old) : ''),
         start: day(x.start), deadline: day(x.deadline),
-        status: PROJECT_STATUSES.includes(x.status) ? x.status : ('Pas démarré' as const),
+        status: PROJECT_STATUSES.includes(x.status) ? x.status : ('Not started' as const),
         position: Number.isFinite(Number(x.position)) && x.position !== null ? Number(x.position) : i,
         brief: {
           context: text(x.brief?.context), goal: text(x.brief?.goal),
@@ -203,11 +203,11 @@ export function demoData(profile: AppData['profile']): AppData {
   const m = (off: number, day: number) => `${monthsAgo(off)}-${String(day).padStart(2, '0')}`;
   const entries: AppData['entries'] = [];
   const rows: [AppData['entries'][number]['type'], string, string, string, number[]][] = [
-    ['revenue', 'Prestations', 'Website redesign invoice', p1, [6200, 7400, 5800, 8900, 6100, 9300]],
-    ['direct', 'Sous-traitance', 'Freelance developer', p1, [1800, 2400, 1500, 3100, 1700, 3600]],
+    ['revenue', 'Services', 'Website redesign invoice', p1, [6200, 7400, 5800, 8900, 6100, 9300]],
+    ['direct', 'Subcontracting', 'Freelance developer', p1, [1800, 2400, 1500, 3100, 1700, 3600]],
     ['opex', 'Marketing', 'Ads & content', '', [300, 650, 400, 900, 350, 1200]],
-    ['opex', 'Cotisations & impôts', 'Social charges & taxes', '', [900, 1050, 850, 1300, 900, 1400]],
-    ['opex', 'Déplacements', 'Client travel', '', [120, 0, 380, 90, 0, 260]],
+    ['opex', 'Social charges & taxes', 'Social charges & taxes', '', [900, 1050, 850, 1300, 900, 1400]],
+    ['opex', 'Travel', 'Client travel', '', [120, 0, 380, 90, 0, 260]],
   ];
   rows.forEach(([type, category, label, projectId, vals], ri) =>
     vals.forEach((amount, i) => {
@@ -218,16 +218,16 @@ export function demoData(profile: AppData['profile']): AppData {
   return {
     profile,
     clients: [
-      { id: c2, name: 'Atelier Nord', color: '#8b6fe8' },
-      { id: c3, name: 'Kiné Plus', color: '#22a6c9' },
-      { id: c1, name: 'Maison Lemaire', color: '#f07a3a' },
-      { id: c4, name: 'Vélo & Co', color: '#2fa565' },
+      { id: c2, name: 'Northside Studio', color: '#8b6fe8' },
+      { id: c3, name: 'Physio Plus', color: '#22a6c9' },
+      { id: c1, name: 'Hudson Home', color: '#f07a3a' },
+      { id: c4, name: 'Bike & Co', color: '#2fa565' },
     ],
     projects: [
-      { id: p1, name: 'E-commerce site redesign', clientId: c1, start: m(2, 4), deadline: m(-1, 15), status: 'En cours' , position: 0, brief: { context: 'Online home decor shop, 800 orders a month.', goal: 'Double the mobile conversion rate.', deliverables: 'Mockups, build, payments, training.', out: 'Product photos and SEO product copy.' } },
-      { id: p2, name: 'Visual identity', clientId: c2, start: m(0, 10), deadline: m(-2, 2), status: 'Pas démarré' , position: 1 , brief: { context: '', goal: '', deliverables: '', out: '' } },
-      { id: p3, name: 'Booking app', clientId: c3, start: m(4, 1), deadline: m(0, 1), status: 'En cours' , position: 2 , brief: { context: '', goal: '', deliverables: '', out: '' } },
-      { id: p4, name: 'SEO audit', clientId: c4, start: m(3, 1), deadline: m(2, 12), status: 'Terminé' , position: 3 , brief: { context: '', goal: '', deliverables: '', out: '' } },
+      { id: p1, name: 'E-commerce site redesign', clientId: c1, start: m(2, 4), deadline: m(-1, 15), status: 'In progress' , position: 0, brief: { context: 'Online home decor shop, 800 orders a month.', goal: 'Double the mobile conversion rate.', deliverables: 'Mockups, build, payments, training.', out: 'Product photos and SEO product copy.' } },
+      { id: p2, name: 'Visual identity', clientId: c2, start: m(0, 10), deadline: m(-2, 2), status: 'Not started' , position: 1 , brief: { context: '', goal: '', deliverables: '', out: '' } },
+      { id: p3, name: 'Booking app', clientId: c3, start: m(4, 1), deadline: m(0, 1), status: 'In progress' , position: 2 , brief: { context: '', goal: '', deliverables: '', out: '' } },
+      { id: p4, name: 'SEO audit', clientId: c4, start: m(3, 1), deadline: m(2, 12), status: 'Done' , position: 3 , brief: { context: '', goal: '', deliverables: '', out: '' } },
     ],
     tasks: [
       { id: uid(), title: 'Send quote v2', col: 'todo', clientId: '', projectId: p2, due: isoDate(), note: '' , position: 0, doneAt: '' },
@@ -240,15 +240,15 @@ export function demoData(profile: AppData['profile']): AppData {
     entries,
     investments: [],
     notes: [
-      { id: uid(), projectId: p1, date: m(0, 18), kind: 'appel', body: 'Check-in with the owner: product mockups approved, she wants Apple Pay.', createdAt: '' },
+      { id: uid(), projectId: p1, date: m(0, 18), kind: 'call', body: 'Check-in with the owner: product mockups approved, she wants Apple Pay.', createdAt: '' },
       { id: uid(), projectId: p1, date: m(0, 22), kind: 'decision', body: 'Launch v1 without the customer reviews module.', createdAt: '' },
     ],
     recurring: [
-      { id: uid(), label: 'Maintenance retainer', type: 'revenue', category: 'Abonnements / retainers', amount: 1500, frequency: 'monthly', start, end: '', projectId: p3 },
-      { id: uid(), label: 'Coworking', type: 'opex', category: 'Loyer & bureau', amount: 650, frequency: 'monthly', start, end: '', projectId: '' },
-      { id: uid(), label: 'Google Workspace', type: 'opex', category: 'Logiciels & SaaS', amount: 14, frequency: 'monthly', start, end: '', projectId: '' },
-      { id: uid(), label: 'Figma', type: 'opex', category: 'Logiciels & SaaS', amount: 180, frequency: 'yearly', start, end: '', projectId: '' },
-      { id: uid(), label: 'Business bank account', type: 'opex', category: 'Frais bancaires', amount: 45, frequency: 'monthly', start, end: '', projectId: '' },
+      { id: uid(), label: 'Maintenance retainer', type: 'revenue', category: 'Subscriptions / retainers', amount: 1500, frequency: 'monthly', start, end: '', projectId: p3 },
+      { id: uid(), label: 'Coworking', type: 'opex', category: 'Rent & office', amount: 650, frequency: 'monthly', start, end: '', projectId: '' },
+      { id: uid(), label: 'Google Workspace', type: 'opex', category: 'Software & SaaS', amount: 14, frequency: 'monthly', start, end: '', projectId: '' },
+      { id: uid(), label: 'Figma', type: 'opex', category: 'Software & SaaS', amount: 180, frequency: 'yearly', start, end: '', projectId: '' },
+      { id: uid(), label: 'Business bank account', type: 'opex', category: 'Bank fees', amount: 45, frequency: 'monthly', start, end: '', projectId: '' },
     ],
   };
 }

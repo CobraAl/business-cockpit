@@ -20,7 +20,7 @@ const emptyEntry = (): Omit<Entry, 'id' | 'amount'> & { amount: string } => ({
   date: isoDate(), label: '', type: 'revenue', category: CATEGORIES.revenue[0], amount: '', projectId: '',
 });
 const emptyRec = (): Omit<Recurring, 'id' | 'amount'> & { amount: string } => ({
-  label: '', type: 'opex', category: 'Logiciels & SaaS', amount: '', frequency: 'monthly', start: isoDate(), end: '', projectId: '',
+  label: '', type: 'opex', category: 'Software & SaaS', amount: '', frequency: 'monthly', start: isoDate(), end: '', projectId: '',
 });
 
 const CURRENCY_OPTIONS = CURRENCIES.map((c) => ({ value: c.v, label: c.l }));
@@ -144,7 +144,7 @@ export default function DataPage({ data, update, account }: { data: AppData; upd
     if (ok) update((d) => ({ ...d, clients: [], projects: [], tasks: [], entries: [], recurring: [], notes: [], investments: [] }));
   };
 
-  const openProjects = data.projects.filter((p) => p.status !== 'Terminé' || p.id === ef.projectId || p.id === rf.projectId);
+  const openProjects = data.projects.filter((p) => p.status !== 'Done' || p.id === ef.projectId || p.id === rf.projectId);
 
   return (
     <section className="section loose">

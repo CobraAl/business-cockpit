@@ -36,7 +36,7 @@ function ProjectList({ data, update, openProject }: Props) {
   const [filter, setFilter] = useState<'all' | 'active' | 'done'>('active');
   const [creating, setCreating] = useState<Project | null>(null);
   const clientOf = (id: string) => data.clients.find((c) => c.id === id);
-  const list = data.projects.filter((p) => filter === 'all' || (filter === 'active' ? p.status !== 'Terminé' : p.status === 'Terminé'));
+  const list = data.projects.filter((p) => filter === 'all' || (filter === 'active' ? p.status !== 'Done' : p.status === 'Done'));
   const today = isoDate();
 
   return (
@@ -60,7 +60,7 @@ function ProjectList({ data, update, openProject }: Props) {
           const last = sortNotes(data.notes.filter((n) => n.projectId === p.id))[0];
           const briefFilled = BRIEF_FIELDS.filter((f) => p.brief[f.key].trim()).length;
           const meta = STATUS_META[p.status];
-          const late = p.deadline && p.deadline < today && p.status !== 'Terminé';
+          const late = p.deadline && p.deadline < today && p.status !== 'Done';
           return (
             <button className="pcard" key={p.id} onClick={() => openProject(p.id)} style={{ borderTopColor: client?.color ?? 'var(--line)' }}>
               <div className="row" style={{ justifyContent: 'space-between', gap: '0.5rem', flexWrap: 'nowrap' }}>
@@ -111,7 +111,7 @@ function ProjectView({ data, update, project: p, back }: Props & { project: Proj
   const done = tasks.filter((t) => t.col === 'done').length;
   const meta = STATUS_META[p.status];
   const today = isoDate();
-  const late = p.deadline && p.deadline < today && p.status !== 'Terminé';
+  const late = p.deadline && p.deadline < today && p.status !== 'Done';
 
   const cycle = () =>
     update((d) => ({

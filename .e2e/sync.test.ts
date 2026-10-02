@@ -58,15 +58,15 @@ try {
       { id: c2, name: 'Globex', color: '#abcdef' },
     ],
     projects: [
-      { id: p1, name: 'Website redesign', clientId: c1, start: '2026-09-01', deadline: '', status: 'En cours', position: 0 },
-      { id: p2, name: 'Audit', clientId: c2, start: '', deadline: '2026-12-31', status: 'Pas démarré', position: 1 },
+      { id: p1, name: 'Website redesign', clientId: c1, start: '2026-09-01', deadline: '', status: 'In progress', position: 0 },
+      { id: p2, name: 'Audit', clientId: c2, start: '', deadline: '2026-12-31', status: 'Not started', position: 1 },
     ],
     tasks: [
       { id: randomUUID(), title: 'Devis', col: 'todo', clientId: c1, projectId: p1, due: '2026-10-01', note: 'n', position: 0 },
       { id: randomUUID(), title: 'Relance', col: 'blocked', clientId: c2, projectId: p2, due: '', note: '', position: 1 },
     ],
-    entries: [{ id: randomUUID(), date: '2026-09-03', label: 'Facture', type: 'revenue', category: 'Prestations', amount: 1200.5, projectId: p1 }],
-    recurring: [{ id: randomUUID(), label: 'Design tool', type: 'opex', category: 'Logiciels & SaaS', amount: 20, frequency: 'monthly', start: '2026-09-27', end: '', projectId: '' }],
+    entries: [{ id: randomUUID(), date: '2026-09-03', label: 'Invoice', type: 'revenue', category: 'Services', amount: 1200.5, projectId: p1 }],
+    recurring: [{ id: randomUUID(), label: 'Design tool', type: 'opex', category: 'Software & SaaS', amount: 20, frequency: 'monthly', start: '2026-09-27', end: '', projectId: '' }],
   });
   await repoA.save(d);
   const fresh = await createSupabaseRepository(dbA, A.id).load();
@@ -102,7 +102,7 @@ try {
   await phone.save({ ...clone(s1), projects: s1.projects.filter((p) => p.id !== p2), tasks: s1.tasks.map((t) => (t.projectId === p2 ? { ...t, projectId: '' } : t)) });
   let stale: string[] = [];
   try {
-    await laptop.save({ ...clone(s2), projects: s2.projects.map((p) => (p.id === p2 ? { ...p, status: 'En cours' } : p)), tasks: s2.tasks.map((t) => ({ ...t, projectId: p2 })) });
+    await laptop.save({ ...clone(s2), projects: s2.projects.map((p) => (p.id === p2 ? { ...p, status: 'In progress' } : p)), tasks: s2.tasks.map((t) => ({ ...t, projectId: p2 })) });
   } catch (e) {
     if (e instanceof RejectedError) stale = e.stale.projects;
     else throw e;
@@ -141,18 +141,18 @@ try {
   const r5d = createSupabaseRepository(dbA, A.id);
   const x0 = (await r5d.load())!;
   // A dedicated project, so the later isolation checks on p1 still find A's row.
-  const pj = { id: randomUUID(), name: 'Journal test', clientId: '', start: '', deadline: '', status: 'En cours' as const, position: 50, brief: { context: '', goal: '', deliverables: '', out: '' } };
+  const pj = { id: randomUUID(), name: 'Journal test', clientId: '', start: '', deadline: '', status: 'In progress' as const, position: 50, brief: { context: '', goal: '', deliverables: '', out: '' } };
   await r5d.save({ ...clone(x0), projects: [...x0.projects, pj] });
   const x5 = (await r5d.load())!;
   const n1 = randomUUID(), n2 = randomUUID();
   await r5d.save({
     ...clone(x5),
     projects: x5.projects.map((p) => (p.id === pj.id ? { ...p, brief: { context: 'Ctx', goal: 'But', deliverables: 'Livrables', out: 'Hors\nscope' } } : p)),
-    notes: [...x5.notes, { id: n1, projectId: pj.id, date: '2026-09-20', kind: 'appel', body: 'Appel https://x.test' }, { id: n2, projectId: pj.id, date: '2026-09-21', kind: 'decision', body: 'Go' }],
+    notes: [...x5.notes, { id: n1, projectId: pj.id, date: '2026-09-20', kind: 'call', body: 'Call https://x.test' }, { id: n2, projectId: pj.id, date: '2026-09-21', kind: 'decision', body: 'Go' }],
   });
   const y5 = (await createSupabaseRepository(dbA, A.id).load())!;
   ok('brief round-trips', JSON.stringify(y5.projects.find((p) => p.id === pj.id)?.brief) === JSON.stringify({ context: 'Ctx', goal: 'But', deliverables: 'Livrables', out: 'Hors\nscope' }));
-  ok('notes round-trip', y5.notes.filter((n) => n.projectId === pj.id).length === 2 && y5.notes.some((n) => n.id === n1 && n.kind === 'appel' && n.body === 'Appel https://x.test'));
+  ok('notes round-trip', y5.notes.filter((n) => n.projectId === pj.id).length === 2 && y5.notes.some((n) => n.id === n1 && n.kind === 'call' && n.body === 'Call https://x.test'));
   const r5e = createSupabaseRepository(dbA, A.id);
   const z5 = (await r5e.load())!;
   requests = [];
@@ -216,7 +216,7 @@ try {
   // 6. bulk: 250 entries then delete all (chunked deletes)
   const r6 = createSupabaseRepository(dbA, A.id);
   const base6 = (await r6.load())!;
-  const many = Array.from({ length: 250 }, (_, i) => ({ id: randomUUID(), date: '2026-08-01', label: 'x' + i, type: 'opex' as const, category: 'Autre charge', amount: i + 0.1, projectId: '' }));
+  const many = Array.from({ length: 250 }, (_, i) => ({ id: randomUUID(), date: '2026-08-01', label: 'x' + i, type: 'opex' as const, category: 'Other expense', amount: i + 0.1, projectId: '' }));
   await r6.save({ ...clone(base6), entries: [...base6.entries, ...many] });
   ok('250 entries stored', (await createSupabaseRepository(dbA, A.id).load())!.entries.length === base6.entries.length + 250);
   await r6.save({ ...clone(base6), entries: [] });
@@ -234,7 +234,7 @@ try {
   const dbB = await B.client();
   const seen = await Promise.all(['profiles', 'clients', 'projects', 'tasks', 'entries', 'recurring'].map((t) => dbB.from(t).select('*')));
   ok('user B reads 0 rows of A', seen.every((r) => !r.error && r.data!.length === 0), seen.map((r) => r.data?.length ?? r.error?.message).join(','));
-  const hijack = await dbB.from('projects').upsert({ id: p1, name: 'hacked', client: '', status: 'En cours' });
+  const hijack = await dbB.from('projects').upsert({ id: p1, name: 'hacked', client: '', status: 'In progress' });
   const stillA = await admin.from('projects').select('name,user_id').eq('id', p1).single();
   ok('B cannot overwrite A row via upsert', stillA.data?.name === 'Website redesign' && stillA.data?.user_id === A.id, `${hijack.error?.code ?? 'no error'} / ${stillA.data?.name}`);
   const upd = await dbB.from('projects').update({ name: 'hacked' }).eq('id', p1).select();
@@ -244,7 +244,7 @@ try {
   const anon = createClient(URL_, PUB, { auth: { persistSession: false } });
   const an = await anon.from('projects').select('id');
   ok('anon cannot read', !!an.error || an.data!.length === 0, an.error?.code ?? `${an.data?.length} rows`);
-  const ai = await anon.from('projects').insert({ name: 'x', status: 'En cours' });
+  const ai = await anon.from('projects').insert({ name: 'x', status: 'In progress' });
   ok('anon cannot insert', !!ai.error, ai.error?.code ?? 'inserted!');
   const ac = await anon.from('clients').select('id');
   ok('anon cannot read clients', !!ac.error || ac.data!.length === 0, ac.error?.code ?? `${ac.data?.length} rows`);
@@ -252,7 +252,7 @@ try {
   ok('B cannot rename A client', !bc.error && bc.data!.length === 0);
 
   // 10. legacy import (free-text client on projects) becomes client rows, once
-  const legacy = normalize({ profile: emptyData().profile, projects: [{ id: randomUUID(), name: 'Old', client: 'Acme', start: '', deadline: '', status: 'En cours' } as never], tasks: [], entries: [], recurring: [] } as never);
+  const legacy = normalize({ profile: emptyData().profile, projects: [{ id: randomUUID(), name: 'Old', client: 'Acme', start: '', deadline: '', status: 'In progress' } as never], tasks: [], entries: [], recurring: [] } as never);
   ok('legacy client text -> client row', legacy.clients.length === 1 && legacy.clients[0].name === 'Acme' && legacy.projects[0].clientId === legacy.clients[0].id);
   const again = normalize(JSON.parse(JSON.stringify(legacy)));
   ok('normalize is stable on new format', JSON.stringify(again) === JSON.stringify(legacy));

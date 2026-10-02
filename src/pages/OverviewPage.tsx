@@ -19,7 +19,7 @@ function changedFields<T extends object>(original: T, edited: T): Partial<T> {
 }
 
 const emptyProject = (): Omit<Project, 'id' | 'position'> => ({
-  name: '', clientId: '', start: isoDate(), deadline: '', status: 'Pas démarré',
+  name: '', clientId: '', start: isoDate(), deadline: '', status: 'Not started',
   brief: { context: '', goal: '', deliverables: '', out: '' },
 });
 const STATUS_OPTIONS = PROJECT_STATUSES.map((s) => ({ value: s, label: statusLabel(s), color: STATUS_META[s].color }));
@@ -61,8 +61,8 @@ function Projects({ data, update, openProject }: { data: AppData; update: Update
   const today = isoDate();
   const clientOf = (id: string) => data.clients.find((c) => c.id === id);
 
-  const list = data.projects.filter((p) => filter === 'all' || (filter === 'active' ? p.status !== 'Terminé' : p.status === 'Terminé'));
-  const activeCount = data.projects.filter((p) => p.status !== 'Terminé').length;
+  const list = data.projects.filter((p) => filter === 'all' || (filter === 'active' ? p.status !== 'Done' : p.status === 'Done'));
+  const activeCount = data.projects.filter((p) => p.status !== 'Done').length;
 
   const add = () => {
     if (!pf.name.trim() || (pf.start && !isDay(pf.start)) || (pf.deadline && !isDay(pf.deadline)) || dueBeforeStart(pf)) return;
@@ -142,8 +142,8 @@ function Projects({ data, update, openProject }: { data: AppData; update: Update
         {list.map((p) => {
           const tasks = data.tasks.filter((t) => t.projectId === p.id);
           const done = tasks.filter((t) => t.col === 'done').length;
-          const late = p.deadline && p.deadline < today && p.status !== 'Terminé';
-          const meta = STATUS_META[p.status] ?? STATUS_META['En pause'];
+          const late = p.deadline && p.deadline < today && p.status !== 'Done';
+          const meta = STATUS_META[p.status] ?? STATUS_META['On hold'];
           return (
             <div className="proj" key={p.id}>
               <div className="cell c-name">
@@ -271,7 +271,7 @@ function Board({ data, update }: { data: AppData; update: Update }) {
   const today = isoDate();
   const projectOf = (id: string) => data.projects.find((p) => p.id === id);
   const clientOf = (id: string) => data.clients.find((c) => c.id === id);
-  const openProjects = data.projects.filter((p) => p.status !== 'Terminé');
+  const openProjects = data.projects.filter((p) => p.status !== 'Done');
   // A task follows its project's client unless another client is picked for it.
   const pickProject = (id: string) => {
     setProjectId(id);

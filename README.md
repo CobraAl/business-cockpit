@@ -169,7 +169,7 @@ Where things live, if you want to look yourself:
 | Names shown for statuses, task columns, journal entry types | `src/lib/constants.ts` (labels only) |
 | Currencies offered, date and number format | `CURRENCIES` and `LOCALE` in `src/lib/constants.ts` |
 
-Renaming a label is safe. Adding or removing a project status, task column or journal entry type also needs `src/types.ts` and a database change (a new file in `supabase/migrations/`), because the database only accepts the known values. The values stored in the database are partly in French (for example the status `En cours`); the English labels you see come from `src/lib/constants.ts`.
+Renaming a label is safe. Adding or removing a project status, task column or journal entry type also needs `src/types.ts` and a database change (a new file in `supabase/migrations/`), because the database only accepts the known values.
 
 ---
 

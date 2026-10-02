@@ -19,8 +19,8 @@ create table if not exists projects (
   client      text not null default '',
   start       date,
   deadline    date,
-  status      text not null default 'Pas démarré'
-              check (status in ('Pas démarré', 'En cours', 'En pause', 'Terminé')),
+  status      text not null default 'Not started'
+              check (status in ('Not started', 'In progress', 'On hold', 'Done')),
   created_at  timestamptz not null default now()
 );
 

@@ -79,7 +79,7 @@ export default function App({ repo, account }: { repo: Repository; account?: Acc
     if (!data) return null;
     const month = allTxns(data).filter((t) => t.date.slice(0, 7) === monthKey());
     return {
-      active: data.projects.filter((p) => p.status === 'En cours').length,
+      active: data.projects.filter((p) => p.status === 'In progress').length,
       blocked: data.tasks.filter((t) => t.col === 'blocked').length,
       netRate: totals(month).netRate,
       hasRevenue: totals(month).rev > 0,

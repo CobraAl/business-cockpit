@@ -31,7 +31,7 @@ export function RecurringModal({ item, data, update, onClose }: { item: Recurrin
   const amount = parseAmount(f.amount);
   const endBeforeStart = !!f.end && isDay(f.end) && isDay(f.start) && f.end < f.start;
   const valid = !!f.label.trim() && !!amount && isDay(f.start) && (!f.end || isDay(f.end)) && !endBeforeStart;
-  const projects = data.projects.filter((p) => p.status !== 'Terminé' || p.id === f.projectId);
+  const projects = data.projects.filter((p) => p.status !== 'Done' || p.id === f.projectId);
 
   const save = () => {
     if (!valid || !amount) return;
@@ -96,7 +96,7 @@ export function EntryModal({ entry, data, update, onClose }: { entry: Entry; dat
   const confirm = useConfirm();
   const amount = parseAmount(f.amount);
   const valid = !!amount && isDay(f.date);
-  const projects = data.projects.filter((p) => p.status !== 'Terminé' || p.id === f.projectId);
+  const projects = data.projects.filter((p) => p.status !== 'Done' || p.id === f.projectId);
 
   const save = () => {
     if (!valid || !amount) return;
